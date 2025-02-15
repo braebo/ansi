@@ -1,0 +1,43 @@
+{
+	"name": "@braebo/ansi",
+	"version": "0.1.0",
+	"description": "ANSI code helpers for node.js and chrome.",
+	"keywords": [
+		"ansi",
+		"color",
+		"terminal",
+		"console",
+		"logger",
+		"typescript"
+	],
+	"license": "MIT",
+	"author": "braebo <brady@braebo.dev>",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./build/index.d.ts",
+			"import": "./build/index.js"
+		}
+	},
+	"types": "./build/index.d.ts",
+	"files": [
+		"build",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"build": "rolldown src/index.ts --config rolldown.config.ts",
+		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
+		"lint": "publint"
+	},
+	"devDependencies": {
+		"@changesets/cli": "2.27.12",
+		"@svitejs/changesets-changelog-github-compact": "1.2.0",
+		"changeset": "0.2.6",
+		"publint": "0.3.4",
+		"rolldown": "1.0.0-beta.3",
+		"typescript": "latest",
+		"unplugin-isolated-decl": "^0.11.0",
+		"vitest": "3.0.5"
+	}
+}

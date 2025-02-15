@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"module": "ESNext",
+
+		// Build
+		"outDir": "build",
+		"declaration": true,
+		"isolatedDeclarations": true,
+
+		// Bundler
+		"moduleResolution": "Bundler",
+		"verbatimModuleSyntax": true,
+		"skipLibCheck": true,
+
+		// Rules
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noPropertyAccessFromIndexSignature": true,
+
+		// JSR
+		"noImplicitReturns": true
+	},
+	"include": ["src"]
+}
