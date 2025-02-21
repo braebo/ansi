@@ -137,6 +137,7 @@ function paint_object(v: Record<any, unknown>, opts: ClrOptions = {}): string {
 	const { inline, indent = 1 } = opts
 	const nl = inline ? '' : '\n'
 	const indentStr = inline ? '' : '  '.repeat(indent)
+	const parentIndentStr = inline ? '' : '  '.repeat(indent - 1)
 	let s = '{ ' + nl
 	const entries = Object.entries(v)
 	for (let j = 0; j < entries.length; j++) {
@@ -149,6 +150,6 @@ function paint_object(v: Record<any, unknown>, opts: ClrOptions = {}): string {
 	}
 	s += nl
 	if (inline) s += ' '
-	s += '}'
+	s += parentIndentStr + '}'
 	return s
 }
