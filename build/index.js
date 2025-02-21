@@ -34,6 +34,7 @@ function hexToRgb(hex) {
 		parseInt(result[3], 16)
 	] : null;
 }
+const CLEAR = "\x1B[0m";
 
 //#endregion
 //#region src/ansi-mini.ts
@@ -59,30 +60,24 @@ function l(...args) {
 	log(args);
 }
 function err(...args) {
-	log(args, {
-		label: r(bd("ERROR ")),
-		logger: console.error
-	});
+	log(r(bd("ERROR ")), { logger: console.error });
+	log(args, { logger: console.error });
 }
 
 //#endregion
 //#region src/ansi-logger.ts
 function log(args = [], opts = {}) {
-	const { label = "", logger = console.log, prefix = d("︙ "), delimiter = "", inline = true } = opts;
+	const { logger: logger$1 = console.log, prefix = "", delimiter = " ", inline = true } = opts;
+	if (!Array.isArray(args)) args = [args];
 	if (args.length === 0) {
-		label && logger(prefix + label);
-		logger(prefix);
+		logger$1(prefix);
 		return;
 	}
 	if (typeof args[0] === "string" && args.length === 1) {
 		const lines = args[0].split("\n");
-		for (let i = 0; i < lines.length; i++) {
-			if (i === 0 && label) logger(prefix + label);
-			logger(prefix + lines[i]);
-		}
+		for (let i = 0; i < lines.length; i++) logger$1(prefix + lines[i]);
 		return;
 	}
-	if (label) logger(prefix + label);
 	try {
 		const a = [];
 		for (let i = 0; i < args.length; i++) switch (typeof args[i]) {
@@ -91,7 +86,11 @@ function log(args = [], opts = {}) {
 					a.push(d(args[i]));
 					break;
 				}
-				const s$1 = paint_object(args[i], { inline });
+				if (Array.isArray(args[i])) {
+					a.push(d(args[i].join(delimiter)));
+					break;
+				}
+				const s$1 = paint_object(args[i], { inline: args.length > 1 });
 				if (inline) a.push(s$1);
 				else a.push(s$1.replaceAll("\n", "\n" + prefix));
 				break;
@@ -105,12 +104,15 @@ function log(args = [], opts = {}) {
 				break;
 			}
 		}
-		logger(prefix + a.join(delimiter));
+		logger$1(prefix + a.join(delimiter));
 	} catch (e) {
 		console.error(e);
 		console.log(args);
 	}
 	return;
+}
+function logger(opts) {
+	return (...args) => log(args, opts);
 }
 /** Colors a primitive based on its type. */
 function paint_primitive(v, opts = {}) {
@@ -134,6 +136,7 @@ function paint_object(v, opts = {}) {
 	const { inline, indent = 1 } = opts;
 	const nl = inline ? "" : "\n";
 	const indentStr = inline ? "" : "  ".repeat(indent);
+	const parentIndentStr = inline ? "" : "  ".repeat(indent - 1);
 	let s$1 = "{ " + nl;
 	const entries = Object.entries(v);
 	for (let j = 0; j < entries.length; j++) {
@@ -147,7 +150,7 @@ function paint_object(v, opts = {}) {
 	}
 	s$1 += nl;
 	if (inline) s$1 += " ";
-	s$1 += "}";
+	s$1 += parentIndentStr + "}";
 	return s$1;
 }
 
@@ -160,24 +163,33 @@ function ansiGradient(...hexColors) {
 		if (!rgb) throw new Error(`Invalid hex color: ${hex}`);
 		return rgb;
 	});
-	return (position) => {
-		position = Math.max(0, Math.min(1, position));
-		const segment = position * (rgbColors.length - 1);
-		const index = Math.floor(segment);
-		const fraction = segment - index;
-		if (index >= rgbColors.length - 1) {
-			const [r$2, g$2, b$2] = rgbColors[rgbColors.length - 1];
-			return `\x1b[38;2;${r$2};${g$2};${b$2}m`;
+	return (_) => {
+		if (typeof _ === "string") return gradientText(_, interpolate);
+		return interpolate(_);
+		function interpolate(stop) {
+			stop = Math.max(0, Math.min(1, stop));
+			const segment = stop * (rgbColors.length - 1);
+			const index = Math.floor(segment);
+			const fraction = segment - index;
+			if (index >= rgbColors.length - 1) {
+				const [r$2, g$2, b$2] = rgbColors[rgbColors.length - 1];
+				return `\x1b[38;2;${r$2};${g$2};${b$2}m`;
+			}
+			const start = rgbColors[index];
+			const end = rgbColors[index + 1];
+			const r$1 = Math.round(start[0] + (end[0] - start[0]) * fraction);
+			const g$1 = Math.round(start[1] + (end[1] - start[1]) * fraction);
+			const b$1 = Math.round(start[2] + (end[2] - start[2]) * fraction);
+			return `\x1b[38;2;${r$1};${g$1};${b$1}m`;
 		}
-		const start = rgbColors[index];
-		const end = rgbColors[index + 1];
-		const r$1 = Math.round(start[0] + (end[0] - start[0]) * fraction);
-		const g$1 = Math.round(start[1] + (end[1] - start[1]) * fraction);
-		const b$1 = Math.round(start[2] + (end[2] - start[2]) * fraction);
-		return `\x1b[38;2;${r$1};${g$1};${b$1}m`;
 	};
+}
+function gradientText(text, gradient) {
+	let arr = [...text];
+	for (let i = 0; i < arr.length; i++) arr[i] = gradient(i / (arr.length - 1)) + arr[i];
+	return arr.join("") + `\x1b[0m`;
 }
 
 //#endregion
-export { ansiGradient, ansiHex, ansiStyle, b, bd, c, d, em, err, g, gr, hexToRgb, inv, l, log, m, n, o, p, r, s, ul, y };
+export { CLEAR, ansiGradient, ansiHex, ansiStyle, b, bd, c, d, em, err, g, gr, hexToRgb, inv, l, log, logger, m, n, o, p, r, s, ul, y };
 //# sourceMappingURL=index.js.map

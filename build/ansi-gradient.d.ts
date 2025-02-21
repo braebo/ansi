@@ -11,4 +11,4 @@
  * console.log(sunset(1), 'yellow')
  * ```
  */
-export declare function ansiGradient(...hexColors: `#${string}`[]): (position: number) => string;
+export declare function ansiGradient(...hexColors: `#${string}`[]): (stop_or_text: number | string) => string;

@@ -35,3 +35,5 @@ export declare function ansiStyle(style: AnsiStyle): (...args: any[]) => string;
  * Converts a hex color string into an `[r, g, b]` tuple in range `[0,255]`.
  */
 export declare function hexToRgb(hex: string): [number, number, number] | null;
+/** Resets the terminal color. */
+export declare const CLEAR = "\u001B[0m";
