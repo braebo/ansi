@@ -13,7 +13,9 @@ import { hexToRgb } from './ansi-hex'
  * console.log(sunset(1), 'yellow')
  * ```
  */
-export function ansiGradient(...hexColors: `#${string}`[]): (position: number) => string {
+export function ansiGradient(
+	...hexColors: `#${string}`[]
+): (stop_or_text: number | string) => string {
 	if (hexColors.length < 2) {
 		throw new Error('Gradient requires at least 2 colors')
 	}
@@ -24,37 +26,45 @@ export function ansiGradient(...hexColors: `#${string}`[]): (position: number) =
 		return rgb
 	})
 
-	return (position: number): string => {
-		// Clamp position to 0-1
-		position = Math.max(0, Math.min(1, position))
-
-		// Find the color stops we're between
-		const segment = position * (rgbColors.length - 1)
-		const index = Math.floor(segment)
-		const fraction = segment - index
-
-		// Handle edge cases
-		if (index >= rgbColors.length - 1) {
-			const [r, g, b] = rgbColors[rgbColors.length - 1]
-			return `\x1b[38;2;${r};${g};${b}m`
+	return (_: number | string): string => {
+		if (typeof _ === 'string') {
+			return gradientText(_, interpolate)
 		}
 
-		// Interpolate between the two colors
-		const start = rgbColors[index]
-		const end = rgbColors[index + 1]
+		return interpolate(_)
 
-		const r = Math.round(start[0] + (end[0] - start[0]) * fraction)
-		const g = Math.round(start[1] + (end[1] - start[1]) * fraction)
-		const b = Math.round(start[2] + (end[2] - start[2]) * fraction)
+		function interpolate(stop: number) {
+			// Clamp color-stop from 0-1.
+			stop = Math.max(0, Math.min(1, stop))
 
-		return `\x1b[38;2;${r};${g};${b}m`
+			// Find the color stops we're between.
+			const segment = stop * (rgbColors.length - 1)
+			const index = Math.floor(segment)
+			const fraction = segment - index
+
+			// Handle edge cases.
+			if (index >= rgbColors.length - 1) {
+				const [r, g, b] = rgbColors[rgbColors.length - 1]
+				return `\x1b[38;2;${r};${g};${b}m`
+			}
+
+			// Interpolate between the two colors.
+			const start = rgbColors[index]
+			const end = rgbColors[index + 1]
+
+			const r = Math.round(start[0] + (end[0] - start[0]) * fraction)
+			const g = Math.round(start[1] + (end[1] - start[1]) * fraction)
+			const b = Math.round(start[2] + (end[2] - start[2]) * fraction)
+
+			return `\x1b[38;2;${r};${g};${b}m`
+		}
 	}
 }
 
-export function gradientText(text: string, gradient: (stop: number) => string): string {
+function gradientText(text: string, gradient: (stop: number) => string): string {
 	let arr = [...text]
 	for (let i = 0; i < arr.length; i++) {
-		arr[i] = gradient(i / (arr.length - 1 ) ) + arr[i]
+		arr[i] = gradient(i / (arr.length - 1)) + arr[i]
 	}
-	return arr.join('')
+	return arr.join('') + `\x1b[0m`
 }
