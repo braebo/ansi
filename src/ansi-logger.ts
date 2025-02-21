@@ -5,23 +5,26 @@ import { r, g, d, o, p, y } from './ansi-mini'
  */
 export interface LogOptions {
 	/**
-	 * Optional label to prepend to the log.
-	 */
-	label?: string
-	/**
 	 * Alternative logger function, i.e. `console.warn/error`.
 	 * @default console.log
 	 */
 	logger?: (...args: any[]) => void
 	/**
-	 * Prefix to prepend to the log.
-	 * @default d('︙ ')
+	 * Optional prefix to prepend to the log.
+	 * @example
+	 * ```ts
+	 * const l = (...args) => log(args, { prefix: d('┤ ') })
+	 *
+	 * l()                // ┤
+	 * l('Hello, world!') // ┤ Hello, world!
+	 * l()                // ┤
+	 * ```
 	 */
 	prefix?: string
 
 	/**
-	 * Delimiter to use between rest args.
-	 * @default undefined
+	 * Delimiter to use between rest args.  Defaults to a space character.  Pass an empty string to disable.
+	 * @default ' '
 	 */
 	delimiter?: string
 
@@ -33,20 +36,26 @@ export interface LogOptions {
 }
 
 /**
- * `console.log` wrapper that handles multi-line strings and includes an optional label and prefix.
+ * You should probably use {@link logger} instead.
+ *
+ * Used by {@link logger} to create `console.log` with various {@link LogOptions|options} and features.
+ *
+ * @TODO: This whole file should prolly be a class.
  */
-export function log(args = [] as any[], opts: LogOptions = {}): void {
+export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 	// prettier-ignore
 	const {
-		label = '',
 		logger = console.log,
-		prefix = d('︙ '),
-		delimiter = '',
+		prefix = '',
+		delimiter = ' ',
 		inline = true,
 	} = opts
 
+	if (!Array.isArray(args)) {
+		args = [args]
+	}
+
 	if (args.length === 0) {
-		label && logger(prefix + label)
 		logger(prefix)
 
 		return
@@ -55,14 +64,12 @@ export function log(args = [] as any[], opts: LogOptions = {}): void {
 	if (typeof args[0] === 'string' && args.length === 1) {
 		const lines = args[0].split('\n')
 		for (let i = 0; i < lines.length; i++) {
-			if (i === 0 && label) logger(prefix + label)
 			logger(prefix + lines[i])
 		}
 
 		return
 	}
 
-	if (label) logger(prefix + label)
 	try {
 		const a = []
 
@@ -73,7 +80,13 @@ export function log(args = [] as any[], opts: LogOptions = {}): void {
 						a.push(d(args[i]))
 						break
 					}
-					const s = paint_object(args[i], { inline })
+					if (Array.isArray(args[i])) {
+						a.push(d((args[i] as T[]).join(delimiter)))
+						break
+					}
+					const s = paint_object(args[i] as Record<any, unknown>, {
+						inline: args.length > 1,
+					})
 					if (inline) a.push(s)
 					else a.push(s.replaceAll('\n', '\n' + prefix))
 					break
@@ -98,13 +111,36 @@ export function log(args = [] as any[], opts: LogOptions = {}): void {
 	return
 }
 
+/**
+ * Creates a logger function with the given {@link LogOptions|options}.
+ *
+ * - {@link LogOptions.logger|`logger`} - Alternative logger function, i.e. `console.warn/error`.
+ * - {@link LogOptions.prefix|`prefix`} - Optional prefix to prepend to the log.
+ * - {@link LogOptions.delimiter|`delimiter`} - Delimiter to use between rest args.  Defaults to a space character.  Pass an empty string to disable.
+ * - {@link LogOptions.inline|`inline`} - Whether to print objects in a single line.
+ *
+ * @example
+ * ```ts
+ * const l = logger({ prefix: d('| ') })
+ *
+ * l()                // |
+ * l('Hello, world!') // | Hello, world!
+ * l()                // |
+ * ```
+ *
+ * @TODO: new Logger()
+ */
+export function logger(opts: LogOptions): (...args: any[]) => void {
+	return (...args: any[]) => log(args, opts)
+}
+
+/** @internal */
 interface ClrOptions {
 	/**
 	 * Whether to print objects in a single line.
 	 * @default true
 	 */
 	inline?: boolean
-	/** @internal */
 	indent?: number
 }
 
