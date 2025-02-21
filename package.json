@@ -28,7 +28,9 @@
 	"scripts": {
 		"build": "rolldown src/index.ts --config rolldown.config.ts",
 		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
-		"lint": "publint"
+		"lint": "publint",
+		"format": "prettier --write .",
+		"demo": "bun run --watch test/demo.ts"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.27.12",
