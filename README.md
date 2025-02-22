@@ -1,6 +1,6 @@
 # @braebo/ansi
 
-Simple log coloring for Node.js and Chrome.
+ANSI code helpers for node.js and chrome.
 
 <br>
 
@@ -128,6 +128,12 @@ err('Something went wrong!')
 ### Browser Compatibility
 
 The package automatically detects unsupported browsers (Safari, Firefox) and falls back to plain text output. Full color support is available in Chrome/Chromium-based browsers and Node.js environments.
+
+<br>
+
+### Why
+
+NIH syndrome / copy-paste fatigue.
 
 <br>
 

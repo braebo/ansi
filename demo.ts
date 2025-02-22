@@ -1,6 +1,6 @@
-import { ansiGradient, CLEAR as C, LogOptions } from '../src'
-import { log, logger } from '../src'
-import { r, d } from '../src'
+import { ansiGradient, CLEAR as C } from './src'
+import { log, logger } from './src'
+import { r, d } from './src'
 
 const l = logger({ prefix: d('| ') })
 

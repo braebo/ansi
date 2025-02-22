@@ -7,7 +7,7 @@ on:
 
 jobs:
     release:
-        if: github.repository == 'braebo/_NAME_'
+        if: github.repository == 'braebo/ansi'
         name: Release
         runs-on: ubuntu-latest
         permissions:
