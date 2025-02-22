@@ -10,12 +10,12 @@ export default defineConfig([
 		},
 		plugins: [isolated_declarations()],
 	},
-	{
-		input: 'src/index.ts',
-		output: {
-			file: 'build/index.min.js',
-			minify: true,
-			sourcemap: false,
-		},
-	},
+	// todo: is rolldown minification still experimental?
+	// {
+	// 	input: 'src/index.ts',
+	// 	output: {
+	// 		file: 'build/index.min.js',
+	// 		minify: true,
+	// 	},
+	// },
 ])
