@@ -142,7 +142,7 @@ interface ClrOptions {
 /**
  * Colors a primitive based on its type.
  */
-export function paint_primitive(v: any, opts: ClrOptions = {}): string {
+export function paint_primitive(v: any, opts: ClrOptions & { wrapString?: boolean } = {}): string {
 	if (v === null) return d('null')
 	if (v === undefined) return d('undefined')
 	if (v === true || v === false) return y(v)
@@ -155,7 +155,7 @@ export function paint_primitive(v: any, opts: ClrOptions = {}): string {
 		case 'number':
 			return p(v)
 		case 'string':
-			return d(g('"')) + g(v) + d(g('"'))
+			return opts.wrapString ? d(g('"')) + g(v) + d(g('"')) : v
 		case 'boolean':
 			return v ? g('true') : r('false')
 		case 'object':
@@ -186,7 +186,7 @@ export function paint_object(v: any, opts: ClrOptions = {}): string {
 		s += opts.prefix
 		s += indentStr + d(entries[j][0])
 		s += ': '
-		s += paint_primitive(entries[j][1], { inline, indent: indent + 1 })
+		s += paint_primitive(entries[j][1], { inline, indent: indent + 1, wrapString: true })
 		if (j < entries.length - 1) {
 			s += ', ' + nl
 		}
