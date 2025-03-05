@@ -11,6 +11,14 @@ export const ANSI_STYLE_CODES = {
 	strikethrough: 9,
 } as const
 
+const isFirefox = () =>
+	globalThis.navigator?.userAgent.indexOf('Firefox/') !== -1 &&
+	globalThis.navigator?.userAgent.indexOf('Seamonkey') === -1
+
+const isSafari = () =>
+	globalThis.navigator?.userAgent.indexOf('Safari') !== -1 &&
+	globalThis.navigator?.userAgent.indexOf('Chrome') === -1
+
 /**
  * Creates an ANSI True Color _(24-bit RGB)_ formatter function from a hex color, falling back to
  * uncolored text in unsupported browsers _(Safari, Firefox)_.
@@ -24,7 +32,7 @@ export const ANSI_STYLE_CODES = {
 export function ansiHex(hex_color: `#${string}`) {
 	return (...args: any[]): string => {
 		const str = args.join('')
-		if (globalThis.navigator?.userAgent.match(/firefox|safari/i)) {
+		if (isFirefox() || isSafari()) {
 			return str
 		}
 
@@ -46,7 +54,7 @@ export function ansiHex(hex_color: `#${string}`) {
  * ```
  */
 export function ansiStyle(style: AnsiStyle): (...args: any[]) => string {
-	if (globalThis.navigator?.userAgent.match(/firefox|safari/i)) {
+	if (isFirefox() || isSafari()) {
 		return (...args: any[]) => args.join('')
 	}
 
