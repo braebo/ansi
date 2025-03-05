@@ -58,3 +58,17 @@ export declare function log<T>(args?: T | T[], opts?: LogOptions): void;
  * @TODO: new Logger()
  */
 export declare function logger(opts: LogOptions): (...args: any[]) => void;
+/** @internal */
+interface ClrOptions {
+    /**
+     * Whether to print objects in a single line.
+     * @default true
+     */
+    inline?: boolean;
+    indent?: number;
+}
+/** Colors a primitive based on its type. */
+export declare function paint_primitive(v: any, opts?: ClrOptions): string;
+/** Converts an object into a colorized string. */
+export declare function paint_object(v: any, opts?: ClrOptions): string;
+export {};

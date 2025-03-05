@@ -10,17 +10,19 @@ const ANSI_STYLE_CODES = {
 	hidden: 8,
 	strikethrough: 9
 };
+const isFirefox = () => globalThis.navigator?.userAgent.indexOf("Firefox/") !== -1 && globalThis.navigator?.userAgent.indexOf("Seamonkey") === -1;
+const isSafari = () => globalThis.navigator?.userAgent.indexOf("Safari") !== -1 && globalThis.navigator?.userAgent.indexOf("Chrome") === -1;
 function ansiHex(hex_color) {
 	return (...args) => {
 		const str = args.join("");
-		if (globalThis.navigator?.userAgent.match(/firefox|safari/i)) return str;
+		if (isFirefox() || isSafari()) return str;
 		const rgb = hexToRgb(hex_color);
 		if (!rgb) return str;
 		return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m${str}\x1b[0m`;
 	};
 }
 function ansiStyle(style) {
-	if (globalThis.navigator?.userAgent.match(/firefox|safari/i)) return (...args) => args.join("");
+	if (isFirefox() || isSafari()) return (...args) => args.join("");
 	const code = ANSI_STYLE_CODES[style];
 	const styleCode = `\x1b[${code}m`;
 	const resetCode = code === 0 ? "" : code <= 2 ? "\x1B[22m" : `\x1b[2${code}m`;
@@ -35,124 +37,6 @@ function hexToRgb(hex) {
 	] : null;
 }
 const CLEAR = "\x1B[0m";
-
-//#endregion
-//#region src/ansi-mini.ts
-const r = ansiHex("#ff5347");
-const g = ansiHex("#57ab57");
-const b = ansiHex("#4c4ce0");
-const y = ansiHex("#e2e270");
-const m = ansiHex("#d426d4");
-const c = ansiHex("#2fdede");
-const o = ansiHex("#ff7f50");
-const p = ansiHex("#9542e7");
-const gr = ansiHex("#808080");
-const d = ansiStyle("dim");
-const bd = ansiStyle("bold");
-const em = ansiStyle("italic");
-const ul = ansiStyle("underline");
-const inv = ansiStyle("inverse");
-const s = ansiStyle("strikethrough");
-function n(count = 1) {
-	for (let i = 0; i < count; i++) log();
-}
-function l(...args) {
-	log(args);
-}
-function err(...args) {
-	log(r(bd("ERROR ")), { logger: console.error });
-	log(args, { logger: console.error });
-}
-
-//#endregion
-//#region src/ansi-logger.ts
-function log(args = [], opts = {}) {
-	const { logger: logger$1 = console.log, prefix = "", delimiter = " ", inline = true } = opts;
-	if (!Array.isArray(args)) args = [args];
-	if (args.length === 0) {
-		logger$1(prefix);
-		return;
-	}
-	if (typeof args[0] === "string" && args.length === 1) {
-		const lines = args[0].split("\n");
-		for (let i = 0; i < lines.length; i++) logger$1(prefix + lines[i]);
-		return;
-	}
-	try {
-		const a = [];
-		for (let i = 0; i < args.length; i++) switch (typeof args[i]) {
-			case "object": {
-				if (!args[i]) {
-					a.push(d(args[i]));
-					break;
-				}
-				if (Array.isArray(args[i])) {
-					a.push(d(args[i].join(delimiter)));
-					break;
-				}
-				const s$1 = paint_object(args[i], { inline: args.length > 1 });
-				if (inline) a.push(s$1);
-				else a.push(s$1.replaceAll("\n", "\n" + prefix));
-				break;
-			}
-			case "number": {
-				a.push(p(args[i]));
-				break;
-			}
-			default: {
-				a.push(args[i]);
-				break;
-			}
-		}
-		logger$1(prefix + a.join(delimiter));
-	} catch (e) {
-		console.error(e);
-		console.log(args);
-	}
-	return;
-}
-function logger(opts) {
-	return (...args) => log(args, opts);
-}
-/** Colors a primitive based on its type. */
-function paint_primitive(v, opts = {}) {
-	if (v === null) return d("null");
-	if (v === undefined) return d("undefined");
-	if (v === true || v === false) return y(v);
-	switch (typeof v) {
-		case "function":
-			const s$1 = d(o(v.toString().replaceAll(/\n/g, "")));
-			if (s$1.length < 75) return s$1;
-			return d(o("[Function]"));
-		case "number": return p(v);
-		case "string": return d(g("\"")) + g(v) + d(g("\""));
-		case "boolean": return v ? g("true") : r("false");
-		case "object": return paint_object(v, opts);
-		default: return v;
-	}
-}
-/** Converts an object into a colorized string. */
-function paint_object(v, opts = {}) {
-	const { inline, indent = 1 } = opts;
-	const nl = inline ? "" : "\n";
-	const indentStr = inline ? "" : "  ".repeat(indent);
-	const parentIndentStr = inline ? "" : "  ".repeat(indent - 1);
-	let s$1 = "{ " + nl;
-	const entries = Object.entries(v);
-	for (let j = 0; j < entries.length; j++) {
-		s$1 += indentStr + d(entries[j][0]);
-		s$1 += ": ";
-		s$1 += paint_primitive(entries[j][1], {
-			inline,
-			indent: indent + 1
-		});
-		if (j < entries.length - 1) s$1 += ", " + nl;
-	}
-	s$1 += nl;
-	if (inline) s$1 += " ";
-	s$1 += parentIndentStr + "}";
-	return s$1;
-}
 
 //#endregion
 //#region src/ansi-gradient.ts
@@ -191,5 +75,135 @@ function gradientText(text, gradient) {
 }
 
 //#endregion
-export { CLEAR, ansiGradient, ansiHex, ansiStyle, b, bd, c, d, em, err, g, gr, hexToRgb, inv, l, log, logger, m, n, o, p, r, s, ul, y };
+//#region src/ansi-mini.ts
+const r = ansiHex("#ff5347");
+const g = ansiHex("#57ab57");
+const b = ansiHex("#4c4ce0");
+const y = ansiHex("#e2e270");
+const m = ansiHex("#d426d4");
+const c = ansiHex("#2fdede");
+const o = ansiHex("#ff7f50");
+const p = ansiHex("#9542e7");
+const gr = ansiHex("#808080");
+const d = ansiStyle("dim");
+const bd = ansiStyle("bold");
+const em = ansiStyle("italic");
+const ul = ansiStyle("underline");
+const inv = ansiStyle("inverse");
+const s = ansiStyle("strikethrough");
+function n(count = 1) {
+	for (let i = 0; i < count; i++) log();
+}
+function l(...args) {
+	log(args);
+}
+function err(...args) {
+	log(r(bd("ERROR ")), { logger: console.error });
+	log(args, { logger: console.error });
+}
+
+//#endregion
+//#region src/ansi-logger.ts
+function log(args = [], opts = {}) {
+	const { logger: logger$1 = console.log, prefix = "", delimiter = " ", inline = false } = opts;
+	if (!Array.isArray(args)) args = [args];
+	if (args.length === 0) {
+		logger$1(prefix);
+		return;
+	}
+	if (typeof args[0] === "string" && args.length === 1) {
+		const lines = args[0].split("\n");
+		for (let i = 0; i < lines.length; i++) logger$1(prefix + lines[i]);
+		return;
+	}
+	try {
+		const a = [];
+		function paint(v, arr) {
+			switch (typeof v) {
+				case "object": {
+					if (!v) {
+						arr.push(d(v));
+						break;
+					}
+					if (Array.isArray(v)) {
+						const aa = [];
+						aa.push("[");
+						for (let i = 0; i < v.length; i++) {
+							paint(v[i], aa);
+							if (i < v.length - 1) aa.push(",");
+						}
+						aa.push("]");
+						arr.push(aa.join(""));
+						break;
+					}
+					const s$1 = paint_object(v, { inline });
+					arr.push(s$1);
+					break;
+				}
+				case "number": {
+					arr.push(p(v));
+					break;
+				}
+				default: {
+					arr.push(v);
+					break;
+				}
+			}
+		}
+		for (let i = 0; i < args.length; i++) paint(args[i], a);
+		logger$1(prefix + a.join(delimiter));
+	} catch (e) {
+		console.error(e);
+		console.log(args);
+	}
+	return;
+}
+function logger(opts) {
+	return (...args) => log(args, opts);
+}
+function paint_primitive(v, opts = {}) {
+	if (v === null) return d("null");
+	if (v === undefined) return d("undefined");
+	if (v === true || v === false) return y(v);
+	switch (typeof v) {
+		case "function":
+			const s$1 = d(o(v.toString().replaceAll(/\n/g, "")));
+			if (s$1.length < 75) return s$1;
+			return d(o("[Function]"));
+		case "number": return p(v);
+		case "string": return d(g("\"")) + g(v) + d(g("\""));
+		case "boolean": return v ? g("true") : r("false");
+		case "object": return paint_object(v, opts);
+		default: return v;
+	}
+}
+function paint_object(v, opts = {}) {
+	if (!v || typeof v !== "object") return paint_primitive(v, opts);
+	let { inline, indent = 1 } = opts;
+	if ("__inline__" in v) {
+		inline = v.__inline__;
+		delete v.__inline__;
+	}
+	const nl = inline ? "" : "\n";
+	const indentStr = inline ? "" : "  ".repeat(indent);
+	const parentIndentStr = inline ? "" : "  ".repeat(indent - 1);
+	let s$1 = "{ " + nl;
+	const entries = Object.entries(v);
+	for (let j = 0; j < entries.length; j++) {
+		s$1 += indentStr + d(entries[j][0]);
+		s$1 += ": ";
+		s$1 += paint_primitive(entries[j][1], {
+			inline,
+			indent: indent + 1
+		});
+		if (j < entries.length - 1) s$1 += ", " + nl;
+	}
+	s$1 += nl;
+	if (inline) s$1 += " ";
+	s$1 += parentIndentStr + "}";
+	return s$1;
+}
+
+//#endregion
+export { CLEAR, ansiGradient, ansiHex, ansiStyle, b, bd, c, d, em, err, g, gr, hexToRgb, inv, l, log, logger, m, n, o, p, paint_object, paint_primitive, r, s, ul, y };
 //# sourceMappingURL=index.js.map
