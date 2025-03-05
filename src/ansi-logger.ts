@@ -179,8 +179,15 @@ export function paint_primitive(v: any, opts: ClrOptions = {}): string {
 }
 
 /** Converts an object into a colorized string. */
-function paint_object(v: Record<any, unknown>, opts: ClrOptions = {}): string {
-	const { inline, indent = 1 } = opts
+export function paint_object(v: any, opts: ClrOptions = {}): string {
+	if (!v || typeof v !== 'object') return paint_primitive(v, opts)
+	let { inline, indent = 1 } = opts
+
+	if ('__inline__' in v) {
+		inline = v.__inline__
+		delete v.__inline__
+	}
+
 	const nl = inline ? '' : '\n'
 	const indentStr = inline ? '' : '  '.repeat(indent)
 	const parentIndentStr = inline ? '' : '  '.repeat(indent - 1)
