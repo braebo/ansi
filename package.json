@@ -28,7 +28,7 @@
 	"scripts": {
 		"build": "rolldown src/index.ts --config rolldown.config.ts",
 		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
-		"dev": "bun run --watch test/demo.ts",
+		"dev": "bun run --watch demo.ts",
 		"format": "prettier --write .",
 		"lint": "publint"
 	},
@@ -36,6 +36,7 @@
 		"@changesets/cli": "2.27.12",
 		"@svitejs/changesets-changelog-github-compact": "1.2.0",
 		"changeset": "0.2.6",
+		"jsr": "^0.13.4",
 		"publint": "0.3.4",
 		"rolldown": "1.0.0-beta.3",
 		"typescript": "latest",

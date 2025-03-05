@@ -49,4 +49,4 @@ jobs:
 
             - name: Publish to jsr
               if: steps.changesets.outputs.published == 'true'
-              run: npx -y jsr publish --allow-dirty
+              run: pnpm jsr publish --allow-dirty
