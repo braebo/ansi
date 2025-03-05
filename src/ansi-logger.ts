@@ -177,6 +177,8 @@ export function paint_object(v: any, opts: ClrOptions = {}): string {
 		delete v.__inline__
 	}
 
+	opts.prefix ??= ''
+
 	const nl = inline ? '' : '\n'
 	const indentStr = inline ? '' : '  '.repeat(indent)
 	const parentIndentStr = inline ? '' : '  '.repeat(indent - 1)
