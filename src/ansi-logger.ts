@@ -48,7 +48,7 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 		logger = console.log,
 		prefix = '',
 		delimiter = ' ',
-		inline = true,
+		inline = false,
 	} = opts
 
 	if (!Array.isArray(args)) {
@@ -71,35 +71,45 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 	}
 
 	try {
-		const a = []
+		const a = [] as string[]
 
-		for (let i = 0; i < args.length; i++) {
-			switch (typeof args[i]) {
+		function paint(v: any, arr: string[]) {
+			switch (typeof v) {
 				case 'object': {
-					if (!args[i]) {
-						a.push(d(args[i]))
+					if (!v) {
+						arr.push(d(v))
 						break
 					}
-					if (Array.isArray(args[i])) {
-						a.push(d((args[i] as T[]).join(delimiter)))
+					if (Array.isArray(v)) {
+						const aa = []
+						aa.push('[')
+						for (let i = 0; i < v.length; i++) {
+							paint(v[i], aa)
+							if (i < v.length - 1) aa.push(',')
+						}
+						aa.push(']')
+						arr.push(aa.join(''))
 						break
 					}
-					const s = paint_object(args[i] as Record<any, unknown>, {
-						inline: args.length > 1,
+					const s = paint_object(v as Record<any, unknown>, {
+						inline: inline,
 					})
-					if (inline) a.push(s)
-					else a.push(s.replaceAll('\n', '\n' + prefix))
+					arr.push(s)
 					break
 				}
 				case 'number': {
-					a.push(p(args[i]))
+					arr.push(p(v))
 					break
 				}
 				default: {
-					a.push(args[i])
+					arr.push(v)
 					break
 				}
 			}
+		}
+
+		for (let i = 0; i < args.length; i++) {
+			paint(args[i], a)
 		}
 
 		logger(prefix + a.join(delimiter))
@@ -145,7 +155,7 @@ interface ClrOptions {
 }
 
 /** Colors a primitive based on its type. */
-function paint_primitive(v: any, opts: ClrOptions = {}): string {
+export function paint_primitive(v: any, opts: ClrOptions = {}): string {
 	if (v === null) return d('null')
 	if (v === undefined) return d('undefined')
 	if (v === true || v === false) return y(v)
