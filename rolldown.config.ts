@@ -8,6 +8,7 @@ export default defineConfig([
 			file: 'build/index.js',
 			sourcemap: true,
 		},
+		// todo: remove once native .d.ts gen is added to rolldown
 		plugins: [isolated_declarations()],
 	},
 	// todo: is rolldown minification still experimental?

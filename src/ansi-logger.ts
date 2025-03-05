@@ -9,6 +9,7 @@ export interface LogOptions {
 	 * @default console.log
 	 */
 	logger?: (...args: any[]) => void
+
 	/**
 	 * Optional prefix to prepend to the log.
 	 * @example
@@ -39,24 +40,19 @@ export interface LogOptions {
  * You should probably use {@link logger} instead.
  *
  * Used by {@link logger} to create `console.log` with various {@link LogOptions|options} and features.
- *
- * @TODO: This whole file should prolly be a class.
  */
 export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
-	// prettier-ignore
-	const {
-		logger = console.log,
-		prefix = '',
-		delimiter = ' ',
-		inline = false,
-	} = opts
+	opts.logger ??= console.log
+	opts.prefix ??= ''
+	opts.delimiter ??= ' '
+	opts.inline ??= false
 
 	if (!Array.isArray(args)) {
 		args = [args]
 	}
 
 	if (args.length === 0) {
-		logger(prefix)
+		opts.logger(opts.prefix)
 
 		return
 	}
@@ -64,7 +60,7 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 	if (typeof args[0] === 'string' && args.length === 1) {
 		const lines = args[0].split('\n')
 		for (let i = 0; i < lines.length; i++) {
-			logger(prefix + lines[i])
+			opts.logger(opts.prefix + lines[i])
 		}
 
 		return
@@ -74,37 +70,27 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 		const a = [] as string[]
 
 		function paint(v: any, arr: string[]) {
-			switch (typeof v) {
-				case 'object': {
-					if (!v) {
-						arr.push(d(v))
-						break
+			if (typeof v !== 'object') {
+				arr.push(paint_primitive(v, opts))
+				return
+			} else {
+				if (!v) {
+					arr.push(d(v))
+					return
+				}
+				if (Array.isArray(v)) {
+					const aa = []
+					aa.push('[')
+					for (let i = 0; i < v.length; i++) {
+						paint(v[i], aa)
+						if (i < v.length - 1) aa.push(', ')
 					}
-					if (Array.isArray(v)) {
-						const aa = []
-						aa.push('[')
-						for (let i = 0; i < v.length; i++) {
-							paint(v[i], aa)
-							if (i < v.length - 1) aa.push(',')
-						}
-						aa.push(']')
-						arr.push(aa.join(''))
-						break
-					}
-					const s = paint_object(v as Record<any, unknown>, {
-						inline: inline,
-					})
-					arr.push(s)
-					break
+					aa.push(']')
+					arr.push(aa.join(''))
+					return
 				}
-				case 'number': {
-					arr.push(p(v))
-					break
-				}
-				default: {
-					arr.push(v)
-					break
-				}
+				const s = paint_object(v as Record<any, unknown>, opts)
+				arr.push(s)
 			}
 		}
 
@@ -112,7 +98,7 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
 			paint(args[i], a)
 		}
 
-		logger(prefix + a.join(delimiter))
+		opts.logger(opts.prefix + a.join(opts.delimiter))
 	} catch (e) {
 		console.error(e)
 		console.log(args)
@@ -137,10 +123,8 @@ export function log<T>(args = [] as T | T[], opts: LogOptions = {}): void {
  * l('Hello, world!') // | Hello, world!
  * l()                // |
  * ```
- *
- * @TODO: new Logger()
  */
-export function logger(opts: LogOptions): (...args: any[]) => void {
+export function logger(opts?: LogOptions): (...args: any[]) => void {
 	return (...args: any[]) => log(args, opts)
 }
 
@@ -152,9 +136,12 @@ interface ClrOptions {
 	 */
 	inline?: boolean
 	indent?: number
+	prefix?: string
 }
 
-/** Colors a primitive based on its type. */
+/**
+ * Colors a primitive based on its type.
+ */
 export function paint_primitive(v: any, opts: ClrOptions = {}): string {
 	if (v === null) return d('null')
 	if (v === undefined) return d('undefined')
@@ -178,7 +165,9 @@ export function paint_primitive(v: any, opts: ClrOptions = {}): string {
 	}
 }
 
-/** Converts an object into a colorized string. */
+/**
+ * Converts an object into a colorized string.
+ */
 export function paint_object(v: any, opts: ClrOptions = {}): string {
 	if (!v || typeof v !== 'object') return paint_primitive(v, opts)
 	let { inline, indent = 1 } = opts
@@ -194,6 +183,7 @@ export function paint_object(v: any, opts: ClrOptions = {}): string {
 	let s = '{ ' + nl
 	const entries = Object.entries(v)
 	for (let j = 0; j < entries.length; j++) {
+		s += opts.prefix
 		s += indentStr + d(entries[j][0])
 		s += ': '
 		s += paint_primitive(entries[j][1], { inline, indent: indent + 1 })
@@ -203,6 +193,7 @@ export function paint_object(v: any, opts: ClrOptions = {}): string {
 	}
 	s += nl
 	if (inline) s += ' '
+	s += opts.prefix
 	s += parentIndentStr + '}'
 	return s
 }
