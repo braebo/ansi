@@ -37,6 +37,8 @@ export declare const ul: (...args: any[]) => string;
 export declare const inv: (...args: any[]) => string;
 /** Wraps args in ansi strikethrough. */
 export declare const s: (...args: any[]) => string;
+/** Reset code to clear all ANSI styles. */
+export declare const clr: (...args: any[]) => string;
 /** Logs a new line `count` times. */
 export declare function n(count?: number): void;
 /** `console.log` shorthand. */

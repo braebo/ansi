@@ -60,6 +60,6 @@ export function l(...args: any[]): void {
 
 /** `console.error` with prefix and ERROR label */
 export function err(...args: any[]): void {
-	log(r(bd('ERROR ')), { logger: console.error })
-	log(args, { logger: console.error })
+	log(r(bd('ERROR ')), { fn: console.error })
+	log(args, { fn: console.error })
 }

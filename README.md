@@ -63,14 +63,17 @@ import { ansiGradient } from '@braebo/ansi'
 
 // Create a gradient function.
 const g = ansiGradient('#38b2db', '#5959b5', '#e84067')
+```
 
-// Wrap a string in the gradient.
+Now that we have a gradient function, we can pass it a string:
+
+```ts
 console.log(g('Simple gradient text.'))
 ```
 
-<img src="./assets/4.png" alt="Gradient" height="150" width="auto" />
+<img src="./assets/gradient1.png" alt="Gradient" height="150" width="auto" />
 
-Pass a number to get a color stop:
+Or pass it a number to get a color stop:
 
 ```ts
 const fade = `
@@ -82,7 +85,7 @@ ${CLEAR}`
 console.log(fade)
 ```
 
-<img src="./assets/6.png" alt="Gradient" height="175" width="auto" />
+<img src="./assets/gradient2.png" alt="Gradient" height="200" width="auto" />
 
 ### Mini Methods
 
@@ -127,7 +130,9 @@ err('Something went wrong!')
 
 ### Browser Compatibility
 
-The package automatically detects unsupported browsers (Safari, Firefox) and falls back to plain text output. Full color support is available in Chrome/Chromium-based browsers and Node.js environments.
+Full color support is available in Chromium browsers and Node.js environments.
+
+Safari and Firefox fall back to plain text output due to lack of support for ANSI codes.
 
 <br>
 
@@ -137,6 +142,6 @@ NIH syndrome / copy-paste fatigue.
 
 <br>
 
-## License
+### License
 
 MIT © [braebo](https://github.com/braebo)
