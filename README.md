@@ -5,11 +5,11 @@ ANSI code helpers for node.js and chrome.
 <br>
 
 -   Hex -> True Color
+-   Dynamic colorization
+-   Gradients
 -   TypeScript / ESM
--   Handles gradients
--   Colorizes objects
--   Dependency free
--   Lightweight <sup>(1.3kb minified brotli)</sup>
+-   Dependency-free
+-   Lightweight
 -   Tree shakable
 
 <br>
@@ -126,7 +126,7 @@ console.log(r() + 'red', y() + 'yellow', g() + 'green')
 
 ### `logger`
 
-The `logger` function used by the mini methods is somewhat involved, so I decided to expose / document it.  It can be used to create your own custom logging functions that colorize input dynamically.
+The `logger` function used by the mini methods is somewhat involved, so I decided to expose / document it. It can be used to create your own custom logging functions that colorize input dynamically.
 
 ```ts
 const err = logger({
@@ -264,8 +264,8 @@ console.log(
 			str: 'foo',
 			fn: () => 'bar',
 		},
-		{ inline: false }
-	)
+		{ inline: false },
+	),
 )
 ```
 
