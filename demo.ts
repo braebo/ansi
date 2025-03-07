@@ -1,4 +1,4 @@
-import { ansiGradient, b, bd, c, CLEAR, clr, em, g, n, paint } from './src'
+import { ansiGradient, b, bd, c, CLEAR, em, g, n, paint, y } from './src'
 import { l, r, d } from './src'
 import { logger } from './src'
 
@@ -42,9 +42,8 @@ ${CLEAR}`
 		l(bd('bold'))
 		l(em('italic'))
 
-		n(2)
-		l(r(), 'red', g(), 'green', b(), 'blue')
-		l(g(), 'hello ', b(), 'world' + clr() + '!')
+		n(1)
+		l(r() + 'red', y() + 'yellow', g() + 'green')
 	}
 
 	function loglog() {
@@ -71,18 +70,21 @@ ${CLEAR}`
 		t('printWidth')
 		/**
 		 * By default, the behavior is similar to traditional `console.log`.  Object and arrays
-		 * will be expanded to multiline output based on the value of the `printWidth` option
-		 * (default `60`). Arrays that contain an object will also be expanded.
+		 * will be expanded to multiline output based on the value of the `printWidth` option.
+		 * Arrays that contain an object will also be expanded.
+		 *
+		 * @default 60
 		 *
 		 * @note Internally, `printWidth` is calculated somewhat roughly, so this option is
 		 * generally a ballpark estimate.
 		 */
-		let l = logger()
+		let l = logger({ printWidth: 50 })
 		l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
 
 		t('inline')
 		/**
 		 * Forces inputs into either inline or multiline output.
+		 * @default undefined
 		 */
 		l = logger({ inline: true })
 		l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
@@ -110,17 +112,10 @@ ${CLEAR}`
 		l = logger()
 		l([true, 1, 'two', () => 3, '__multiline__'])
 
-		t('printWidth')
-		/**
-		 * Used to control the width at which automatic line wrapping occurs (in the absence of an
-		 * explicit `inline` setting / override).
-		 */
-		l = logger({ printWidth: 60 })
-		l(true, 1, 'two', () => 3)
-
 		t('delimiter')
 		/**
-		 * The `delimiter` option can be used to change the delimiter between items.
+		 * The delimiter used between rest args.
+		 * @default ' '
 		 */
 		l = logger({ delimiter: c(' · ') })
 		l(true, 1, 'two', () => 3)

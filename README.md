@@ -108,25 +108,154 @@ l(bd('bold'))
 l(em('italic'))
 ```
 
-<br>
+<img src="./assets/minis.png" alt="Mini" height="250" width="auto" />
 
-### Advanced
+If no arguments are provided, the mini methods will return the ANSI code:
 
-Custom logging functions with support for labels, prefixes, and better object formatting can be created with `log`:
-
-```typescript
-import { log, r, bd } from '@braebo/ansi'
-export const err = (...args: unknown[]) => log(args, { label: r(bd('ERROR')) })
+```ts
+console.log(r() + 'red', y() + 'yellow', g() + 'green')
 ```
 
-Which is how the mini `err` method uses it:
+<img src="./assets/minis-2.png" alt="Mini no args" height="250" width="auto" />
 
-```typescript
-import { err } from '@braebo/ansi'
-err('Something went wrong!')
-```
+> [!NOTE]
+> When no string is provided to a mini method, it won't be wrapped in a corresponding reset code.
+> Use the clear method (`clr()`) to reset the styles yourself.
 
 <br>
+
+### `logger`
+
+The `logger` function can be used to create your own custom logging functions that colorize input dynamically.
+
+```ts
+const l = logger()
+
+l([1, 2], true, { foo: 'bar' })
+```
+
+<img src="./assets/logger.png" alt="Logger default screenshot" height="200" width="auto" />
+
+### `LogOptions`
+
+The `logger` function accepts the following options:
+
+<br>
+
+#### `prefix`
+
+A prefix to prepend to the log.
+
+> @default `''`
+
+```ts
+const l = logger({ prefix: c('⌇ ') })
+
+l(bd('Result'))
+l()
+l([1, 2], true, { foo: 'bar' })
+```
+
+<img src="./assets/logger-prefix.png" alt="Logger prefix screenshot" height="240" width="auto" />
+
+#### `delimiter`
+
+A delimiter to use between rest args.
+
+> @default `' '`
+
+```ts
+const l = logger({ delimiter: c(' · ') })
+
+l([1, 2], true, { foo: 'bar' })
+```
+
+<img src="./assets/logger-delimiter.png" alt="Logger delimiter screenshot" height="200" width="auto" />
+
+#### `inline`
+
+Whether to print objects in a single line.
+
+> @default `false`
+
+```ts
+const l = logger({ inline: true })
+
+l([1, 2], true, { foo: 'bar' })
+```
+
+> [!NOTE]
+> Use `__inline__` for granular overrides 👇
+>
+> ```ts
+> l([1, 2], true, { foo: 'bar', __inline__: true })
+> ```
+
+<img src="./assets/logger-inline.png" alt="Logger inline screenshot" height="150" width="auto" />
+
+#### `fn`
+
+A custom logger function.
+
+> @default `console.log`
+
+<br>
+
+Pass a built-in method:
+
+```ts
+const l = logger({ fn: console.warn })
+
+l('E-gad!')
+```
+
+<img src="./assets/logger-warn.png" alt="Logger warn screenshot" height="42" width="auto" />
+
+<br>
+
+Or make a custom one:
+
+```ts
+const err = logger({
+	prefix: r('| '),
+	fn: (...args: any[]) => {
+		console.log(r('>'), r(bd('ERROR')))
+		console.log(...args)
+	},
+})
+
+err('Something went wrong:', { cause: '¯\\_(ツ)_/¯' })
+```
+
+<img src="./assets/logger-custom.png" alt="Logger custom screenshot" height="200" width="auto" />
+
+<br>
+
+### Pretty Printing
+
+The `paint_primitive` and `paint_object` functions used by `logger` can be used directly:
+
+```ts
+import { paint_object } from '@braebo/ansi'
+
+const pretty = paint_object({ foo: 'bar', baz: [1, 2, { three: 3 }] }, { inline: false })
+
+console.log(pretty)
+```
+
+<img src="./assets/paint_object.png" alt="Paint Object" height="200" width="auto" />
+
+```ts
+import { paint_primitive } from '@braebo/ansi'
+
+const num = paint_primitive(123)
+const bool = paint_primitive(true)
+const str = paint_primitive('true')
+
+console.log(num, bool, str)
+```
+
+<img src="./assets/paint_primitive.png" alt="Paint Primitive" height="200" width="auto" />
 
 ### Browser Compatibility
 

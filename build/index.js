@@ -18,6 +18,7 @@ function ansiHex(hex_color) {
 		if (isFirefox() || isSafari()) return str;
 		const rgb = hexToRgb(hex_color);
 		if (!rgb) return str;
+		if (!str.length) return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
 		return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m${str}\x1b[0m`;
 	};
 }
