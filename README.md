@@ -162,7 +162,7 @@ const l = logger({ printWidth: 50 })
 l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
 ```
 
-<img src="./assets/logger-printwidth.png" alt="Logger printWidth screenshot" height="200" width="auto" />
+<img src="./assets/logger-printWidth.png" alt="Logger printWidth screenshot" height="200" width="auto" />
 
 > [!NOTE]
 > Internally, `printWidth` is calculated somewhat roughly, so this option is generally a ballpark estimate.
