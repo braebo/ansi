@@ -5,9 +5,9 @@
 	"keywords": [
 		"ansi",
 		"color",
-		"terminal",
 		"console",
 		"logger",
+		"terminal",
 		"typescript"
 	],
 	"license": "MIT",
@@ -22,22 +22,22 @@
 	"types": "./build/index.d.ts",
 	"files": [
 		"build",
-		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"README.md"
 	],
 	"scripts": {
-		"build": "rolldown src/index.ts --config rolldown.config.ts",
-		"build-watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
 		"dev": "bun run --watch demo.ts",
+		"build": "rolldown src/index.ts --config rolldown.config.ts",
+		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
 		"format": "prettier --write src",
 		"check": "pnpm run --parallel \"/^check:(?!watch)[^:]*/\"",
-		"check:watch": "pnpm run --parallel \"/^check:watch:.*/\"",
-		"check:tsc": "pnpm tsc --noEmit",
-		"check:watch:tsc": "pnpm tsc --noEmit --watch",
+		"check:jsr": "jsr publish --dry-run ${CI:+--allow-dirty}",
 		"check:publint": "publint",
+		"check:tsc": "pnpm tsc --noEmit",
+		"check:watch": "pnpm run --parallel \"/^check:watch:.*/\"",
+		"check:watch:jsr": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:jsr\"",
 		"check:watch:publint": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:publint\"",
-		"check:jsr": "jsr publish --dry-run $([[ \"$CI\" == 'true' ]] && echo '--allow-dirty')",
-		"check:watch:jsr": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:jsr\""
+		"check:watch:tsc": "pnpm tsc --noEmit --watch"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.28.1",
