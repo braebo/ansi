@@ -67,7 +67,11 @@ export function ansiStyle(style: AnsiStyle): (...args: any[]) => string {
 			? '\x1b[22m'
 			: `\x1b[2${code}m`
 
-	return (...args: any[]) => `${styleCode}${args.join('')}${resetCode}`
+	return (...args: any[]) => {
+		const str = args.join('')
+		if (str.length === 0) return styleCode
+		return `${styleCode}${str}${resetCode}`
+	}
 }
 
 /**
