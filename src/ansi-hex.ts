@@ -29,7 +29,7 @@ const isSafari = () =>
  * console.log(red('This text will be red'))
  * ```
  */
-export function ansiHex(hex_color: `#${string}`) {
+export function ansiHex(hex_color: `#${string}`): (...args: any[]) => string {
 	return (...args: any[]): string => {
 		const str = args.join('')
 		if (isFirefox() || isSafari()) {
