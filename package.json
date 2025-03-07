@@ -29,11 +29,15 @@
 		"build": "rolldown src/index.ts --config rolldown.config.ts",
 		"build-watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
 		"dev": "bun run --watch demo.ts",
-		"format": "prettier --write .",
-		"check": "pnpm run --parallel /^check:.*/",
+		"format": "prettier --write src",
+		"check": "pnpm run --parallel \"/^check:(?!watch)[^:]*/\"",
+		"check:watch": "pnpm run --parallel \"/^check:watch:.*/\"",
 		"check:tsc": "pnpm tsc --noEmit",
+		"check:watch:tsc": "pnpm tsc --noEmit --watch",
 		"check:publint": "publint",
-		"check:jsr": "jsr publish --dry-run"
+		"check:watch:publint": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:publint\"",
+		"check:jsr": "jsr publish --dry-run $([[ \"$CI\" == 'true' ]] && echo '--allow-dirty')",
+		"check:watch:jsr": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:jsr\""
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.28.1",
