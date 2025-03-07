@@ -1,6 +1,6 @@
 {
 	"name": "@braebo/ansi",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "ANSI code helpers for node.js and chrome.",
 	"keywords": [
 		"ansi",
