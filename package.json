@@ -30,7 +30,7 @@
 		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
 		"dev": "bun run --watch demo.ts",
 		"format": "prettier --write .",
-		"lint": "publint",
+		"lint": "publint && jsr publish --dry-run",
 		"check": "pnpm tsc --noEmit",
 		"check:watch": "pnpm tsc --noEmit --watch"
 	},
