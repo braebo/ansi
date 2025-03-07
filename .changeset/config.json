@@ -1,6 +1,6 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@1.6.3/schema.json",
-	"changelog": ["@svitejs/changesets-changelog-github-compact", { "repo": "@braebo/ansi" }],
+	"changelog": ["@svitejs/changesets-changelog-github-compact", { "repo": "braebo/ansi" }],
 	"commit": false,
 	"fixed": [],
 	"linked": [],
