@@ -39,6 +39,11 @@ export function ansiHex(hex_color: `#${string}`) {
 		const rgb = hexToRgb(hex_color)
 		if (!rgb) return str
 
+		if (!str.length) {
+			// Just return the ANSI code.
+			return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m`
+		}
+
 		return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m${str}\x1b[0m`
 	}
 }
