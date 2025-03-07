@@ -43,6 +43,9 @@ export const inv: (...args: any[]) => string = ansiStyle('inverse')
 /** Wraps args in ansi strikethrough. */
 export const s: (...args: any[]) => string = ansiStyle('strikethrough')
 
+/** Reset code to clear all ANSI styles. */
+export const clr: (...args: any[]) => string = ansiStyle('reset')
+
 /** Logs a new line `count` times. */
 export function n(count = 1): void {
 	for (let i = 0; i < count; i++) {
