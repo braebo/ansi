@@ -71,7 +71,7 @@ Now that we have a gradient function, we can pass it a string:
 console.log(g('Simple gradient text.'))
 ```
 
-<img src="./assets/gradient1.png" alt="Gradient" height="150" width="auto" />
+<img src="./assets/gradient-string.png" alt="Gradient string" height="150" width="auto" />
 
 Or pass it a number to get a color stop:
 
@@ -85,7 +85,7 @@ ${CLEAR}`
 console.log(fade)
 ```
 
-<img src="./assets/gradient2.png" alt="Gradient" height="200" width="auto" />
+<img src="./assets/gradient-stops.png" alt="Gradient color stops" height="200" width="auto" />
 
 ### Mini Methods
 
@@ -116,7 +116,7 @@ If no arguments are provided, the mini methods will return the ANSI code:
 console.log(r() + 'red', y() + 'yellow', g() + 'green')
 ```
 
-<img src="./assets/minis-2.png" alt="Mini no args" height="250" width="auto" />
+<img src="./assets/minis2.png" alt="Mini no args" height="175" width="auto" />
 
 > [!NOTE]
 > When no string is provided to a mini method, it won't be wrapped in a corresponding reset code.
@@ -126,15 +126,24 @@ console.log(r() + 'red', y() + 'yellow', g() + 'green')
 
 ### `logger`
 
-The `logger` function can be used to create your own custom logging functions that colorize input dynamically.
+The `logger` function used by the mini methods is somewhat involved, so I decided to expose / document it.  It can be used to create your own custom logging functions that colorize input dynamically.
 
 ```ts
-const l = logger()
+const err = logger({
+	prefix: r('| '),
+	printWidth: 20,
+	fn: (...args: any[]) => {
+		console.log(r('>'), r(bd('ERROR')))
+		console.log(...args)
+	},
+})
 
-l([1, 2], true, { foo: 'bar' })
+err('Something went wrong:', { ok: false, cause: '¯\\_(ツ)_/¯' })
 ```
 
-<img src="./assets/logger.png" alt="Logger default screenshot" height="200" width="auto" />
+<img src="./assets/logger-custom.png" alt="Logger custom screenshot" height="200" width="auto" />
+
+<br>
 
 ### `LogOptions`
 
@@ -142,56 +151,90 @@ The `logger` function accepts the following options:
 
 <br>
 
-#### `prefix`
+#### `printWidth`
 
-A prefix to prepend to the log.
+Controls the expansion of objects and arrays into multiline output.
 
-> @default `''`
+> @default `60`
 
 ```ts
-const l = logger({ prefix: c('⌇ ') })
-
-l(bd('Result'))
-l()
-l([1, 2], true, { foo: 'bar' })
+const l = logger({ printWidth: 50 })
+l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
 ```
 
-<img src="./assets/logger-prefix.png" alt="Logger prefix screenshot" height="240" width="auto" />
+<img src="./assets/logger-printwidth.png" alt="Logger printWidth screenshot" height="200" width="auto" />
+
+> [!NOTE]
+> Internally, `printWidth` is calculated somewhat roughly, so this option is generally a ballpark estimate.
+
+<br>
+
+#### `inline`
+
+Forces inputs into either inline or multiline output.
+
+> @default `undefined`
+
+```ts
+const l = logger({ inline: true })
+l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
+```
+
+<img src="./assets/logger-inline.png" alt="Logger inline screenshot" height="150" width="auto" />
+
+Add `__inline__` to an object for a granular overrides.
+
+```ts
+l({
+	one: 1,
+	two: 2,
+	nested: { __inline__: true, one: 1, two: 2, three: 3 },
+})
+```
+
+<img src="./assets/logger-overrides-obj.png" alt="Logger object overrides screenshot" height="200" width="auto" />
+
+For array overrides, use the strings `__inline__` and `__multiline__` to force inline or multiline output.
+
+```ts
+l([true, 1, 'two', () => 3, '__multiline__'])
+```
+
+<img src="./assets/logger-overrides-array.png" alt="Logger array overrides screenshot" height="250" width="auto" />
+
+<br>
 
 #### `delimiter`
 
-A delimiter to use between rest args.
+The delimiter used between rest args.
 
 > @default `' '`
 
 ```ts
 const l = logger({ delimiter: c(' · ') })
-
-l([1, 2], true, { foo: 'bar' })
+l(true, 1, 'two', () => 3)
 ```
 
-<img src="./assets/logger-delimiter.png" alt="Logger delimiter screenshot" height="200" width="auto" />
+<img src="./assets/logger-delimiter.png" alt="Logger delimiter screenshot" height="150" width="auto" />
 
-#### `inline`
+<br>
 
-Whether to print objects in a single line.
+#### `prefix`
 
-> @default `false`
+A prefix to prepend to each line (works with multiline output).
+
+> @default `''`
 
 ```ts
-const l = logger({ inline: true })
-
-l([1, 2], true, { foo: 'bar' })
+const l = logger({ prefix: c('⌇ '), delimiter: '' })
+l('# ', bd('Header'))
+l()
+l(d('<p>'), em('Hello, world!'), d('</p>'))
 ```
 
-> [!NOTE]
-> Use `__inline__` for granular overrides 👇
->
-> ```ts
-> l([1, 2], true, { foo: 'bar', __inline__: true })
-> ```
+<img src="./assets/logger-prefix.png" alt="Logger prefix screenshot" height="190" width="auto" />
 
-<img src="./assets/logger-inline.png" alt="Logger inline screenshot" height="150" width="auto" />
+<br>
 
 #### `fn`
 
@@ -199,13 +242,8 @@ A custom logger function.
 
 > @default `console.log`
 
-<br>
-
-Pass a built-in method:
-
 ```ts
 const l = logger({ fn: console.warn })
-
 l('E-gad!')
 ```
 
@@ -213,57 +251,25 @@ l('E-gad!')
 
 <br>
 
-Or make a custom one:
+### `paint()`
+
+The `paint` function used by `logger` can be used directly to colorize arbitrary input:
 
 ```ts
-const err = logger({
-	prefix: r('| '),
-	fn: (...args: any[]) => {
-		console.log(r('>'), r(bd('ERROR')))
-		console.log(...args)
-	},
-})
-
-err('Something went wrong:', { cause: '¯\\_(ツ)_/¯' })
+console.log(
+	paint(
+		{
+			num: 123,
+			bool: true,
+			str: 'foo',
+			fn: () => 'bar',
+		},
+		{ inline: false }
+	)
+)
 ```
 
-<img src="./assets/logger-custom.png" alt="Logger custom screenshot" height="200" width="auto" />
-
-<br>
-
-### Pretty Printing
-
-The `paint_primitive` and `paint_object` functions used by `logger` can be used directly:
-
-```ts
-import { paint_object } from '@braebo/ansi'
-
-const pretty = paint_object({ foo: 'bar', baz: [1, 2, { three: 3 }] }, { inline: false })
-
-console.log(pretty)
-```
-
-<img src="./assets/paint_object.png" alt="Paint Object" height="200" width="auto" />
-
-```ts
-import { paint_primitive } from '@braebo/ansi'
-
-const num = paint_primitive(123)
-const bool = paint_primitive(true)
-const str = paint_primitive('true')
-
-console.log(num, bool, str)
-```
-
-<img src="./assets/paint_primitive.png" alt="Paint Primitive" height="200" width="auto" />
-
-### Browser Compatibility
-
-Full color support is available in Chromium browsers and Node.js environments.
-
-Safari and Firefox fall back to plain text output due to lack of support for ANSI codes.
-
-<br>
+<img src="./assets/paint.png" alt="Paint screenshot" height="200" width="auto" />
 
 ### Why
 

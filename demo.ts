@@ -54,12 +54,13 @@ ${CLEAR}`
 		 */
 		const err = logger({
 			prefix: r('| '),
+			printWidth: 20,
 			fn: (...args: any[]) => {
 				console.log(r('>'), r(bd('ERROR')))
 				console.log(...args)
 			},
 		})
-		err('Something went wrong:', { code: 420, cause: '¯\\_(ツ)_/¯', ok: false })
+		err('Something went wrong:', { ok: false, cause: '¯\\_(ツ)_/¯' })
 
 		t('LogOptions')
 
