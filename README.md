@@ -116,7 +116,7 @@ If no arguments are provided, the mini methods will return the ANSI code:
 console.log(r() + 'red', y() + 'yellow', g() + 'green')
 ```
 
-<img src="./assets/minis2.png" alt="Mini no args" height="175" width="auto" />
+<img src="./assets/minis2.png" alt="Mini no args" height="150" width="auto" />
 
 > [!NOTE]
 > When no string is provided to a mini method, it won't be wrapped in a corresponding reset code.
@@ -141,7 +141,7 @@ const err = logger({
 err('Something went wrong:', { ok: false, cause: '¯\\_(ツ)_/¯' })
 ```
 
-<img src="./assets/logger-custom.png" alt="Logger custom screenshot" height="200" width="auto" />
+<img src="./assets/logger-custom.png" alt="Logger custom screenshot" height="230" width="auto" />
 
 <br>
 
@@ -162,7 +162,7 @@ const l = logger({ printWidth: 50 })
 l({ foo: true, bar: [1, 'two', { three: () => 3 }] })
 ```
 
-<img src="./assets/logger-printWidth.png" alt="Logger printWidth screenshot" height="200" width="auto" />
+<img src="./assets/logger-printWidth.png" alt="Logger printWidth screenshot" height="210" width="auto" />
 
 > [!NOTE]
 > Internally, `printWidth` is calculated somewhat roughly, so this option is generally a ballpark estimate.
@@ -269,7 +269,7 @@ console.log(
 )
 ```
 
-<img src="./assets/paint.png" alt="Paint screenshot" height="200" width="auto" />
+<img src="./assets/paint.png" alt="Paint screenshot" height="250" width="auto" />
 
 ### Why
 
