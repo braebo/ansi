@@ -1,7 +1,7 @@
 {
 	"name": "@braebo/ansi",
 	"version": "0.1.0",
-	"description": "ANSI code helpers for node.js and chrome.",
+	"description": "ANSI code helpers for colorful logging in node.js and chrome.",
 	"keywords": [
 		"ansi",
 		"color",

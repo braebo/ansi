@@ -1,6 +1,6 @@
 # @braebo/ansi
 
-ANSI code helpers for node.js and chrome.
+ANSI code helpers for <span style="background: linear-gradient(90deg, #38b2db, #5959b5, #e84067); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">colorful logging</span> in node.js and chrome.
 
 <br>
 
