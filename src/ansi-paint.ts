@@ -184,7 +184,9 @@ function count(v: any, n = v.length) {
 	// Handles arrays (with nested arrays and objects).
 	for (let i = 0; i < v.length; i++) {
 		if (typeof v[i] === 'object') {
-			if (Array.isArray(v[i])) {
+			if (v[i] === null) {
+				n += 4
+			} else if (Array.isArray(v[i])) {
 				n += count(v[i], n)
 			} else {
 				n += count(Object.values(v[i]), n)
