@@ -1,4 +1,4 @@
-import { r, g, d, o, p, y } from './ansi-mini'
+import { r, g, d, o, p, y, gr, em } from './ansi-mini'
 
 interface PaintOptions {
 	/**
@@ -52,8 +52,8 @@ interface ClrOptions extends PaintOptions {
  * Colors a primitive based on its type.
  */
 function paint_primitive(v: any, opts: ClrOptions): string {
-	if (v === null) return d('null')
-	if (v === undefined) return d('undefined')
+	if (v === null) return em(gr('null'))
+	if (v === undefined) return em(gr('undefined'))
 	if (v === true || v === false) return y(v)
 
 	switch (typeof v) {
