@@ -26,10 +26,8 @@
 		"README.md"
 	],
 	"scripts": {
-		"dev": "bun run --watch demo.ts",
 		"build": "rolldown src/index.ts --config rolldown.config.ts",
 		"build:watch": "rolldown src/index.ts --config rolldown.config.ts --watch",
-		"format": "prettier --write src",
 		"check": "pnpm run --parallel \"/^check:(?!watch)[^:]*/\"",
 		"check:jsr": "jsr publish --dry-run ${CI:+--allow-dirty}",
 		"check:publint": "publint",
@@ -37,7 +35,17 @@
 		"check:watch": "pnpm run --parallel \"/^check:watch:.*/\"",
 		"check:watch:jsr": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:jsr\"",
 		"check:watch:publint": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:publint\"",
-		"check:watch:tsc": "pnpm tsc --noEmit --watch"
+		"check:watch:tsc": "pnpm tsc --noEmit --watch",
+		"dev": "bun run --watch demo.ts",
+		"format": "prettier --write src",
+		"test": "pnpm run --parallel \"/^test:(?!watch).*/\"",
+		"test:bun": "bun run test/bun/index.ts",
+		"test:deno": "deno run --unstable-sloppy-imports test/deno/main.ts",
+		"test:node": "node --experimental-strip-types test/test.ts",
+		"test:watch": "pnpm run --parallel \"/^test:watch:.*/\"",
+		"test:watch:bun": "bun run --watch test/bun/index.ts",
+		"test:watch:deno": "deno run --unstable-sloppy-imports --watch test/deno/main.ts",
+		"test:watch:node": "node --watch --experimental-strip-types test/test.ts"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.28.1",

@@ -4,7 +4,7 @@ const gradient = ansiGradient('#38b2db', '#5959b5', '#e84067')
 const svelte_orange = ansiHex('#e84067')
 
 l(' ') // pnpm swallows empty l() calls
-l(bd(em('<Deno>')))
+l(bd(em('<Bun>')))
 l(g('green'), [CLEAR + bd('bold')], r('red'), bd(b('bold(blue)')))
 
 l(gradient('painted') + ':', {
@@ -22,4 +22,4 @@ l(gradient('painted') + ':', {
 	},
 })
 
-l(bd(em('</Deno>')))
+l(bd(em('</Bun>')))

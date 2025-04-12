@@ -148,6 +148,8 @@ ${CLEAR}`
 					bool: true,
 					str: 'foo',
 					fn: () => 'bar',
+					null: null,
+					undefined: undefined,
 				},
 				{ inline: false },
 			),
