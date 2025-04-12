@@ -15,6 +15,15 @@
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
 
+		// Resolution
+		"declarationMap": true,
+		"sourceMap": true,
+		"baseUrl": ".",
+		"paths": {
+			"@braebo/ansi": ["src/index.ts"],
+			"@braebo/ansi/*": ["src/*"]
+		},
+
 		// Rules
 		"strict": true,
 		"noUnusedLocals": true,

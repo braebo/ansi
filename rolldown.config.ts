@@ -5,18 +5,15 @@ export default defineConfig([
 	{
 		input: 'src/index.ts',
 		output: {
+			format: 'esm',
 			file: 'build/index.js',
 			sourcemap: true,
 		},
 		// todo: remove once native .d.ts gen is added to rolldown
-		plugins: [isolated_declarations()],
+		plugins: [
+			isolated_declarations({
+				sourceMap: true,
+			}),
+		],
 	},
-	// todo: is rolldown minification still experimental?
-	// {
-	// 	input: 'src/index.ts',
-	// 	output: {
-	// 		file: 'build/index.min.js',
-	// 		minify: true,
-	// 	},
-	// },
 ])

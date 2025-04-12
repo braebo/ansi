@@ -1,3 +1,4 @@
+"use strict";
 
 //#region src/ansi-hex.ts
 const ANSI_STYLE_CODES = {
@@ -252,5 +253,31 @@ function gradientText(text, gradient) {
 }
 
 //#endregion
-export { CLEAR, ansiGradient, ansiHex, ansiStyle, b, bd, c, clr, d, em, err, g, gr, hexToRgb, inv, l, log, logger, m, n, o, p, paint, r, s, ul, y };
-//# sourceMappingURL=index.js.map
+exports.CLEAR = CLEAR
+exports.ansiGradient = ansiGradient
+exports.ansiHex = ansiHex
+exports.ansiStyle = ansiStyle
+exports.b = b
+exports.bd = bd
+exports.c = c
+exports.clr = clr
+exports.d = d
+exports.em = em
+exports.err = err
+exports.g = g
+exports.gr = gr
+exports.hexToRgb = hexToRgb
+exports.inv = inv
+exports.l = l
+exports.log = log
+exports.logger = logger
+exports.m = m
+exports.n = n
+exports.o = o
+exports.p = p
+exports.paint = paint
+exports.r = r
+exports.s = s
+exports.ul = ul
+exports.y = y
+//# sourceMappingURL=index.cjs.map

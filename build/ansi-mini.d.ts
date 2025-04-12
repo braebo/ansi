@@ -1,12 +1,12 @@
 /**
- * @fileoverview ANSI Mini
- * Irresponsibly short ANSI code wrappers for the terminal / supported browsers (Chrome).
- * It's mostly a palette of ANSI True Color wrappers using `{@link ansiHex}` and `{@link ansiStyle}`.
- *
- * @example
- * ```ts
- * import { l, r, dim, bd, em } from '@braebo/ansi/mini'
- */
+* @fileoverview ANSI Mini
+* Irresponsibly short ANSI code wrappers for the terminal / supported browsers (Chrome).
+* It's mostly a palette of ANSI True Color wrappers using `{@link ansiHex}` and `{@link ansiStyle}`.
+*
+* @example
+* ```ts
+* import { l, r, dim, bd, em } from '@braebo/ansi/mini'
+*/
 /** Wraps args in ansi red. */
 export declare const r: (...args: any[]) => string;
 /** Wraps args in ansi green. */
