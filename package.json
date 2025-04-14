@@ -35,7 +35,7 @@
 		"check:jsr": "jsr publish --dry-run ${CI:+--allow-dirty}",
 		"check:publint": "publint",
 		"check:tsc": "pnpm tsc --noEmit",
-		"check:types": "pnpm pack && attw --profile esm-only ./braebo-ansi-0.1.0.tgz",
+		"check:types": "attw --profile esm-only $(npm pack)",
 		"check:watch": "pnpm run --parallel \"/^check:watch:.*/\"",
 		"check:watch:jsr": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:jsr\"",
 		"check:watch:publint": "chokidar \"src/**/*.{ts,js,json}\" -c \"pnpm check:publint\"",
