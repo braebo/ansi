@@ -2,9 +2,14 @@
 	"$schema": "https://jsr.io/schema/config-file.v1.json",
 	"name": "@braebo/ansi",
 	"description": "ANSI code helpers for colorful logging in node.js and chrome.",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"exports": "./src/index.ts",
 	"publish": {
-		"include": ["./src/**/*.ts", "./assets/**/*.png", "README.md", "LICENSE"]
+		"include": [
+			"./src/**/*.ts",
+			"./assets/**/*.png",
+			"README.md",
+			"LICENSE"
+		]
 	}
 }
