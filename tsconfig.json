@@ -16,13 +16,12 @@
 		"skipLibCheck": true,
 
 		// Resolution
-		"declarationMap": true,
-		"sourceMap": true,
 		"baseUrl": ".",
 		"paths": {
-			"@braebo/ansi": ["src/index.ts"],
-			"@braebo/ansi/*": ["src/*"]
+			"@braebo/ansi": ["src/index.ts"]
 		},
+		"declarationMap": true,
+		"sourceMap": true,
 
 		// Rules
 		"strict": true,

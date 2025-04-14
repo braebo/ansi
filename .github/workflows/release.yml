@@ -2,8 +2,8 @@ name: Release
 
 on:
     push:
-        branches:
-            - main
+        tags:
+            - v*
 
 jobs:
     release:
@@ -21,10 +21,11 @@ jobs:
                   # Fetch the entire git history so Changesets can generate changelogs with the correct commits
                   fetch-depth: 0
 
-            - name: Setup Node 20
+            - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  registry-url: https://registry.npmjs.org
+                  node-version: lts/*
 
             - name: Setup PNPM
               uses: pnpm/action-setup@v3.0.0
@@ -40,15 +41,18 @@ jobs:
             - name: Check
               run: pnpm check
 
-            - name: Release or Create Release Pull Request or Do Nothing
-              id: changesets
-              uses: changesets/action@v1
-              with:
-                  publish: pnpm changeset publish
+            - name: changelogithub
+              run: pnpm dlx changelogithub@0.12
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Publish to NPM
+              run: |
+                  pnpm config set "//registry.npmjs.org/:_authToken" "${NPM_TOKEN}"
+                  pnpm publish --no-git-checks
+              env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NPM_CONFIG_PROVENANCE: true
 
             - name: Publish to jsr
-              if: steps.changesets.outputs.published == 'true'
-              run: pnpm jsr publish --allow-dirty
+              run: pnpm jsr publish
